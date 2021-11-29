@@ -27,9 +27,13 @@ async function run(): Promise<void> {
 
     // Parse contents of config file into variable
     const config_file_contents = YAML.parse(config_file)
+    console.log(config_file_contents)
 
+    // Get authorizations
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
+
+    //retrieve approvals
     const reviews = await octokit.rest.pulls.listReviews({
       ...context.repo,
       pull_number: payload.pull_request.number
@@ -38,6 +42,7 @@ async function run(): Promise<void> {
     for (const review of reviews.data) {
       if (review.state === `APPROVED`) {
         approved_users.add(review.user!.login)
+        console.log(review.user!.login)
       }
     }
 
@@ -48,9 +53,11 @@ async function run(): Promise<void> {
     )
 
     const sha = payload.pull_request.head.sha
+    console.log(sha)
     // The workflow url can be obtained by combining several environment varialbes, as described below:
     // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
     const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
+    console.log(workflow_url)
     core.info(`Setting a status on commit (${sha})`)
 
     octokit.rest.repos.createCommitStatus({
