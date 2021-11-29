@@ -5,6 +5,7 @@ import * as fs from 'fs'
 import * as YAML from 'yaml'
 import {EOL} from 'os'
 import {Settings, ReviewGatekeeper} from './review_gatekeeper'
+import {SettingsRequester, ReviewRequester} from './review_requester'
 
 async function run(): Promise<void> {
   try {
