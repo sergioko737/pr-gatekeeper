@@ -34,6 +34,13 @@ async function run(): Promise<void> {
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
 
+    // Request reviews if eventName == pull_request
+    if ( context.eventName == 'pull_request' ) {
+      console.log(`We are going to request someones approval!!!`)
+    } else {
+      console.log(`We don't care about requesting approvals! We'll just check who already approved`)
+    }
+
     //retrieve approvals
     const reviews = await octokit.rest.pulls.listReviews({
       ...context.repo,
@@ -47,6 +54,7 @@ async function run(): Promise<void> {
       }
     }
 
+    // check approvals
     const review_gatekeeper = new ReviewGatekeeper(
       config_file_contents as Settings,
       Array.from(approved_users),

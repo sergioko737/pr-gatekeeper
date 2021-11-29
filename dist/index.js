@@ -59,6 +59,13 @@ function run() {
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
+            // Request reviews if eventName == pull_request
+            if (context.eventName == 'pull_request') {
+                console.log(`We are going to request someones approval!!!`);
+            }
+            else {
+                console.log(`We don't care about requesting approvals! We'll just check who already approved`);
+            }
             //retrieve approvals
             const reviews = yield octokit.rest.pulls.listReviews(Object.assign(Object.assign({}, context.repo), { pull_number: payload.pull_request.number }));
             const approved_users = new Set();
@@ -68,6 +75,7 @@ function run() {
                     console.log(`Approval from: ${review.user.login}`);
                 }
             }
+            // check approvals
             const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users), payload.pull_request.user.login);
             const sha = payload.pull_request.head.sha;
             console.log(`sha: ${sha}`);
