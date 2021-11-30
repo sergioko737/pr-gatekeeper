@@ -56,8 +56,8 @@ function run() {
             // Parse contents of config file into variable
             const config_file_contents = YAML.parse(config_file);
             console.log(config_file_contents);
-            console.log(config_file_contents.approvals.groups.from.person);
-            console.log(config_file_contents.approvals.groups.from.team);
+            console.log(config_file_contents.approvals.groups);
+            console.log(config_file_contents.approvals.groups);
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
