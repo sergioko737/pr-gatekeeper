@@ -6,6 +6,7 @@ import * as YAML from 'yaml'
 import {EOL} from 'os'
 import {Settings, ReviewGatekeeper} from './review_gatekeeper'
 import {SettingsRequester, ReviewRequester} from './review_requester'
+import { Collection } from 'yaml/types'
 
 
 
@@ -90,7 +91,12 @@ async function run(): Promise<void> {
       // number (Integer) — Number ID of the pull request
       // reviewers (Hash) (defaults to: {}) — :reviewers [Array] An array of user logins
       // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
-      const rev_per = reviewer_persons
+      const rev_per = Array.from(reviewer_persons)
+      console.log("Reviewer_persons")
+      console.log(typeof reviewer_persons)
+      console.log("rev_per")
+      console.log(typeof rev_per)
+      console.log(typeof rev_per[0])
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
       // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
