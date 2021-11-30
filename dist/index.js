@@ -56,12 +56,26 @@ function run() {
             // Parse contents of config file into variable
             const config_file_contents = YAML.parse(config_file);
             console.log(config_file_contents);
+            console.log(config_file_contents.approvals.groups.from.person);
+            console.log(config_file_contents.approvals.groups.from.team);
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
             // Request reviews if eventName == pull_request
+            //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
+            // Create a review request
+            // Examples:
+            // @client.request_pull_request_review('octokit/octokit.rb', 2, reviewers: ['soudy'])
+            // Parameters:
+            // repo (Integer, String, Hash, Repository) — A GitHub repository
+            // number (Integer) — Number ID of the pull request
+            // reviewers (Hash) (defaults to: {}) — :reviewers [Array] An array of user logins
+            // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
+                // await octokit.request({
+                //   ...context.repo,
+                // })
             }
             else {
                 console.log(`We don't care about requesting approvals! We'll just check who already approved`);
