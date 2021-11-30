@@ -127,7 +127,7 @@ function run() {
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-                yield client.pulls.createReviewRequest({
+                yield client.rest.pulls.requestRevivers({
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
