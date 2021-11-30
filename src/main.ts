@@ -9,7 +9,7 @@ import {SettingsRequester, ReviewRequester} from './review_requester'
 import { GitHub } from '@actions/github/lib/utils'
 
 
-async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer_teams: Set<any>, pr_number: any): Promise<void> {
+async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer_teams: Set<any>, pr_number: any) {
   console.log(`entering assignReviewers`)
   console.log(`Persons: ${reviewer_persons.size}`)
   console.log(`Teams: ${reviewer_teams.size}`)
