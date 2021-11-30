@@ -31,7 +31,10 @@ async function run(): Promise<void> {
     const config_file_contents = YAML.parse(config_file)
     console.log(config_file_contents)
     console.log(config_file_contents.approvals.groups)
-    console.log(config_file_contents.approvals.groups.from)
+    for (const persons of config_file_contents.approvals.groups) {
+      console.log(persons.from.person)
+    }
+    // console.log(config_file_contents.approvals.groups.from)
 
     // Get authorizations
     const token: string = core.getInput('token')
