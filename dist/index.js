@@ -44,8 +44,8 @@ const review_gatekeeper_1 = __nccwpck_require__(302);
 function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`entering assignReviewers`);
-        console.log(`Persons: ${reviewer_persons}`);
-        console.log(`Teams: ${reviewer_teams}`);
+        console.log(`Persons: ${reviewer_persons.lenght}`);
+        console.log(`Teams: ${reviewer_teams.length}`);
         if (reviewer_persons.length || reviewer_teams.length) {
             yield client.pulls.requestReviewers({
                 owner: github.context.repo.owner,
