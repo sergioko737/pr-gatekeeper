@@ -72,6 +72,8 @@ exports.assignReviewers = assignReviewers;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const core = __nccwpck_require__(2186);
+            const github = __nccwpck_require__(5438);
             const context = github.context;
             if (context.eventName !== 'pull_request' &&
                 context.eventName !== 'pull_request_review') {
@@ -125,7 +127,7 @@ function run() {
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-                yield octokit.rest.pulls.requestReviewers({
+                yield octokit.pulls.requestReviewers({
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,

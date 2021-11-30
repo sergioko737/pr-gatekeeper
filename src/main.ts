@@ -36,6 +36,8 @@ export async function assignReviewers(client: any, reviewer_persons: Set<any>, r
 
 async function run(): Promise<void> {
   try {
+    const core = require('@actions/core')
+    const github = require('@actions/github')
     const context = github.context
     if (
       context.eventName !== 'pull_request' &&
@@ -78,6 +80,8 @@ async function run(): Promise<void> {
     // const client = new GitHub(token)
     const pr_number = payload.pull_request.number
 
+
+
     // Request reviews if eventName == pull_request
       //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
       // Create a review request
@@ -100,7 +104,7 @@ async function run(): Promise<void> {
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
       // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-      await octokit.rest.pulls.requestReviewers({
+      await octokit.pulls.requestReviewers({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
