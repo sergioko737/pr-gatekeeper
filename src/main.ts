@@ -6,13 +6,15 @@ import * as YAML from 'yaml'
 import {EOL} from 'os'
 import {Settings, ReviewGatekeeper} from './review_gatekeeper'
 import {SettingsRequester, ReviewRequester} from './review_requester'
-import { GitHub } from '@actions/github/lib/utils'
+import type { GitHub } from "@actions/github/lib/utils"
 
 
-async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer_teams: Set<any>, pr_number: any) {
+
+export async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer_teams: Set<any>, pr_number: any) {
   console.log(`entering assignReviewers`)
   console.log(`Persons: ${reviewer_persons.size}`)
   console.log(`Teams: ${reviewer_teams.size}`)
+  console.log(`Persons set to string: ${[...reviewer_persons].join(',')}`)
   if (reviewer_persons.size || reviewer_teams.size) {
       await client.pulls.createReviewRequest({
           owner: github.context.repo.owner,
@@ -68,7 +70,7 @@ async function run(): Promise<void> {
     // Get authorizations
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
-    // const client = new github.GitHub(token)
+    // const client = new GitHub(token)
     const pr_number = payload.pull_request.number
 
     // Request reviews if eventName == pull_request
@@ -86,7 +88,7 @@ async function run(): Promise<void> {
       // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
-      assignReviewers(context, reviewer_persons, reviewer_teams, pr_number)
+      assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
       // await octokit.request({
       //   ...context.repo,
 

@@ -35,6 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.assignReviewers = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const fs = __importStar(__nccwpck_require__(5747));
@@ -46,6 +47,7 @@ function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
         console.log(`entering assignReviewers`);
         console.log(`Persons: ${reviewer_persons.size}`);
         console.log(`Teams: ${reviewer_teams.size}`);
+        console.log(`Persons set to string: ${[...reviewer_persons].join(',')}`);
         if (reviewer_persons.size || reviewer_teams.size) {
             yield client.pulls.createReviewRequest({
                 owner: github.context.repo.owner,
@@ -60,6 +62,7 @@ function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
         console.log(`exiting assignReviewers`);
     });
 }
+exports.assignReviewers = assignReviewers;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -95,7 +98,7 @@ function run() {
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
-            // const client = new github.GitHub(token)
+            // const client = new GitHub(token)
             const pr_number = payload.pull_request.number;
             // Request reviews if eventName == pull_request
             //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
@@ -109,7 +112,7 @@ function run() {
             // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
-                assignReviewers(context, reviewer_persons, reviewer_teams, pr_number);
+                assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number);
                 // await octokit.request({
                 //   ...context.repo,
                 // })
