@@ -77,7 +77,7 @@ async function run(): Promise<void> {
     // Get authorizations
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
-    // const client = new GitHub(token)
+    const client = github.getOctokit(core.getInput("token"));
     const pr_number = payload.pull_request.number
 
 
@@ -104,7 +104,7 @@ async function run(): Promise<void> {
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
       // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-      await octokit.pulls.requestReviewers({
+      await client.pulls.requestReviewers({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
