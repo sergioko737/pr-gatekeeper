@@ -106,7 +106,7 @@ function run() {
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
-            const client = github.getOctokit(core.getInput("token"));
+            const client = github.getOctokit(token);
             const pr_number = payload.pull_request.number;
             // Request reviews if eventName == pull_request
             //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
@@ -127,7 +127,7 @@ function run() {
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-                yield octokit.pulls.requestReviewers({
+                yield client.pulls.createReviewRequest({
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
