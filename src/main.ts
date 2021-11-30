@@ -9,11 +9,11 @@ import {SettingsRequester, ReviewRequester} from './review_requester'
 import { GitHub } from '@actions/github/lib/utils'
 
 
-async function assignReviewers(client: any, reviewer_persons: any, reviewer_teams: any, pr_number: any): Promise<void> {
+async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer_teams: Set<any>, pr_number: any): Promise<void> {
   console.log(`entering assignReviewers`)
-  console.log(`Persons: ${reviewer_persons.lenght}`)
-  console.log(`Teams: ${reviewer_teams.length}`)
-  if (reviewer_persons.length || reviewer_teams.length) {
+  console.log(`Persons: ${reviewer_persons.size}`)
+  console.log(`Teams: ${reviewer_teams.size}`)
+  if (reviewer_persons.size || reviewer_teams.size) {
       await client.pulls.requestReviewers({
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
@@ -59,6 +59,8 @@ async function run(): Promise<void> {
       reviewer_persons.add(teams.from.team)
     }
     // console.log(config_file_contents.approvals.groups.from)
+    // const reviewer_persons_arr = [...reviewer_persons]
+    // const reviewer_teams_arr = [...reviewer_teams]
     console.log(`Persons: ${reviewer_persons}`)
     for (let item of reviewer_persons) console.log(item)
     for (let item of reviewer_teams) console.log(item)
