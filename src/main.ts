@@ -97,7 +97,7 @@ async function run(): Promise<void> {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
-        reviewers: [...reviewer_persons]
+        reviewers: Array.from(reviewer_persons.values())
         // reviewers: [...reviewer_persons].join(','),
         // team_reviewers: [...reviewer_teams].join(','),
       });
