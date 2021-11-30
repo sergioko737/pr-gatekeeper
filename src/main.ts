@@ -14,7 +14,7 @@ async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer
   console.log(`Persons: ${reviewer_persons.size}`)
   console.log(`Teams: ${reviewer_teams.size}`)
   if (reviewer_persons.size || reviewer_teams.size) {
-      await client.pulls.requestReviewers({
+      await client.pulls.createReviewRequest({
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
           pull_number: pr_number,

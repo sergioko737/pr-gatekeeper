@@ -47,7 +47,7 @@ function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
         console.log(`Persons: ${reviewer_persons.size}`);
         console.log(`Teams: ${reviewer_teams.size}`);
         if (reviewer_persons.size || reviewer_teams.size) {
-            yield client.pulls.requestReviewers({
+            yield client.pulls.createReviewRequest({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 pull_number: pr_number,
