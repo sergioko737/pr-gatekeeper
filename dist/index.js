@@ -123,7 +123,7 @@ function run() {
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
-                    reviewers: reviewer_persons
+                    reviewers: [...reviewer_persons]
                     // reviewers: [...reviewer_persons].join(','),
                     // team_reviewers: [...reviewer_teams].join(','),
                 });
