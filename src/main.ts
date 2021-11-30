@@ -9,7 +9,7 @@ import {SettingsRequester, ReviewRequester} from './review_requester'
 import { GitHub } from '@actions/github/lib/utils'
 
 
-async function assignReviewers(client: any, { reviewer_persons, reviewer_teams }: any, pr_number: any): Promise<void> {
+async function assignReviewers(client: any, reviewer_persons: any, reviewer_teams: any, pr_number: any): Promise<void> {
   console.log(`entering assignReviewers`)
   console.log(`Persons: ${reviewer_persons}`)
   console.log(`Teams: ${reviewer_teams}`)
@@ -83,7 +83,7 @@ async function run(): Promise<void> {
       // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
-      assignReviewers(context, {reviewer_persons, reviewer_teams}, pr_number)
+      assignReviewers(context, reviewer_persons, reviewer_teams, pr_number)
       // await octokit.request({
       //   ...context.repo,
 

@@ -41,7 +41,7 @@ const fs = __importStar(__nccwpck_require__(5747));
 const YAML = __importStar(__nccwpck_require__(3552));
 const os_1 = __nccwpck_require__(2087);
 const review_gatekeeper_1 = __nccwpck_require__(302);
-function assignReviewers(client, { reviewer_persons, reviewer_teams }, pr_number) {
+function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`entering assignReviewers`);
         console.log(`Persons: ${reviewer_persons}`);
@@ -106,7 +106,7 @@ function run() {
             // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
-                assignReviewers(context, { reviewer_persons, reviewer_teams }, pr_number);
+                assignReviewers(context, reviewer_persons, reviewer_teams, pr_number);
                 // await octokit.request({
                 //   ...context.repo,
                 // })
