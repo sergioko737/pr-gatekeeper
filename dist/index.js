@@ -63,6 +63,8 @@ function run() {
             }
             // console.log(config_file_contents.approvals.groups.from)
             console.log(`Persons: ${reviewer_persons}`);
+            for (let item of reviewer_persons)
+                console.log(item);
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
