@@ -51,8 +51,8 @@ function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 pull_number: pr_number,
-                reviewers: reviewer_persons,
-                team_reviewers: reviewer_teams,
+                reviewers: [...reviewer_persons].join(','),
+                team_reviewers: [...reviewer_teams].join(','),
             });
             core.info(`Assigned individual reviews to ${reviewer_persons}.`);
             core.info(`Assigned team reviews to ${reviewer_teams}.`);
@@ -95,6 +95,7 @@ function run() {
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
+            // const client = new github.GitHub(token)
             const pr_number = payload.pull_request.number;
             // Request reviews if eventName == pull_request
             //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource

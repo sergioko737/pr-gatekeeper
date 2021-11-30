@@ -18,8 +18,8 @@ async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
           pull_number: pr_number,
-          reviewers: reviewer_persons,
-          team_reviewers: reviewer_teams,
+          reviewers: [...reviewer_persons].join(','),
+          team_reviewers: [...reviewer_teams].join(','),
       });
       core.info(`Assigned individual reviews to ${reviewer_persons}.`);
       core.info(`Assigned team reviews to ${reviewer_teams}.`);
@@ -68,6 +68,7 @@ async function run(): Promise<void> {
     // Get authorizations
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
+    // const client = new github.GitHub(token)
     const pr_number = payload.pull_request.number
 
     // Request reviews if eventName == pull_request
