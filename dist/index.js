@@ -44,22 +44,28 @@ const os_1 = __nccwpck_require__(2087);
 const review_gatekeeper_1 = __nccwpck_require__(302);
 function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(`entering assignReviewers`);
-        console.log(`Persons: ${reviewer_persons.size}`);
-        console.log(`Teams: ${reviewer_teams.size}`);
-        console.log(`Persons set to string: ${[...reviewer_persons].join(',')}`);
-        if (reviewer_persons.size || reviewer_teams.size) {
-            yield client.pulls.createReviewRequest({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                pull_number: pr_number,
-                reviewers: [...reviewer_persons].join(','),
-                team_reviewers: [...reviewer_teams].join(','),
-            });
-            core.info(`Assigned individual reviews to ${reviewer_persons}.`);
-            core.info(`Assigned team reviews to ${reviewer_teams}.`);
+        try {
+            console.log(`entering assignReviewers`);
+            console.log(`Persons: ${reviewer_persons.size}`);
+            console.log(`Teams: ${reviewer_teams.size}`);
+            console.log(`Persons set to string: ${[...reviewer_persons].join(',')}`);
+            if (reviewer_persons.size || reviewer_teams.size) {
+                yield client.pulls.createReviewRequest({
+                    owner: github.context.repo.owner,
+                    repo: github.context.repo.repo,
+                    pull_number: pr_number,
+                    reviewers: [...reviewer_persons].join(','),
+                    team_reviewers: [...reviewer_teams].join(','),
+                });
+                core.info(`Assigned individual reviews to ${reviewer_persons}.`);
+                core.info(`Assigned team reviews to ${reviewer_teams}.`);
+            }
+            console.log(`exiting assignReviewers`);
         }
-        console.log(`exiting assignReviewers`);
+        catch (error) {
+            core.setFailed(error.message);
+            console.log("error: ", error);
+        }
     });
 }
 exports.assignReviewers = assignReviewers;
