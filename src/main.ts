@@ -8,6 +8,21 @@ import {Settings, ReviewGatekeeper} from './review_gatekeeper'
 import {SettingsRequester, ReviewRequester} from './review_requester'
 import { GitHub } from '@actions/github/lib/utils'
 
+
+async function assignReviewers(client: any, { reviewer_persons, reviewer_teams }: any, pr_number: any): Promise<void> {
+  if (reviewer_persons.length || reviewer_teams.length) {
+      await client.pulls.requestReviewers({
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          pull_number: pr_number,
+          reviewers: reviewer_persons,
+          team_reviewers: reviewer_teams,
+      });
+      core.info(`Assigned individual reviews to ${reviewer_persons}.`);
+      core.info(`Assigned team reviews to ${reviewer_teams}.`);
+  }
+}
+
 async function run(): Promise<void> {
   try {
     const context = github.context
@@ -32,16 +47,22 @@ async function run(): Promise<void> {
     console.log(config_file_contents)
     console.log(config_file_contents.approvals.groups)
     const reviewer_persons = new Set()
+    const reviewer_teams = new Set()
     for (const persons of config_file_contents.approvals.groups) {
       reviewer_persons.add(persons.from.person)
+    }
+    for (const teams of config_file_contents.approvals.groups) {
+      reviewer_persons.add(teams.from.team)
     }
     // console.log(config_file_contents.approvals.groups.from)
     console.log(`Persons: ${reviewer_persons}`)
     for (let item of reviewer_persons) console.log(item)
+    for (let item of reviewer_teams) console.log(item)
 
     // Get authorizations
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
+    const pr_number = payload.pull_request.number
 
     // Request reviews if eventName == pull_request
       //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
@@ -58,6 +79,7 @@ async function run(): Promise<void> {
       // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
+      assignReviewers(context, {reviewer_persons, reviewer_teams}, pr_number)
       // await octokit.request({
       //   ...context.repo,
 
