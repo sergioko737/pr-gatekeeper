@@ -58,7 +58,7 @@ async function run(): Promise<void> {
       reviewer_persons.add(persons.from.person)
     }
     for (const teams of config_file_contents.approvals.groups) {
-      reviewer_persons.add(teams.from.team)
+      reviewer_teams.add(teams.from.team)
     }
     // console.log(config_file_contents.approvals.groups.from)
     // const reviewer_persons_arr = [...reviewer_persons]
