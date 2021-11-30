@@ -57,10 +57,12 @@ function run() {
             const config_file_contents = YAML.parse(config_file);
             console.log(config_file_contents);
             console.log(config_file_contents.approvals.groups);
+            const reviewer_persons = new Set();
             for (const persons of config_file_contents.approvals.groups) {
-                console.log(persons.from.person);
+                reviewer_persons.add(persons.from.person);
             }
             // console.log(config_file_contents.approvals.groups.from)
+            console.log(`Persons: ${reviewer_persons}`);
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
