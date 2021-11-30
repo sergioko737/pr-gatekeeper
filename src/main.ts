@@ -111,7 +111,7 @@ async function run(): Promise<void> {
       //   reviewers: rev_per
         // reviewers: [...reviewer_persons].join(','),
         // team_reviewers: [...reviewer_teams].join(','),
-      });
+      // });
       // await octokit.request({
       //   ...context.repo,
 

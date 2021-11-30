@@ -126,15 +126,15 @@ function run() {
             console.log(typeof rev_per[0]);
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
-                // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-                yield client.pulls.requestReviewers({
-                    owner: github.context.repo.owner,
-                    repo: github.context.repo.repo,
-                    pull_number: pr_number,
-                    reviewers: rev_per
-                    // reviewers: [...reviewer_persons].join(','),
-                    // team_reviewers: [...reviewer_teams].join(','),
-                });
+                assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number);
+                // await client.pulls.requestReviewers({
+                //   owner: github.context.repo.owner,
+                //   repo: github.context.repo.repo,
+                //   pull_number: pr_number,
+                //   reviewers: rev_per
+                // reviewers: [...reviewer_persons].join(','),
+                // team_reviewers: [...reviewer_teams].join(','),
+                // });
                 // await octokit.request({
                 //   ...context.repo,
                 // })
