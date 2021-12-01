@@ -113,6 +113,7 @@ function run() {
             // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
             console.log("Reviewer_persons");
             console.log(Array.isArray(reviewer_persons));
+            console.log(reviewer_persons);
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
@@ -120,11 +121,11 @@ function run() {
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
-                    // reviewers: reviewer_persons,
+                    reviewers: reviewer_persons,
                     // reviewers: ['sergioko747', 'sergioko757'],
-                    reviewers: [],
+                    // reviewers: [],
                     // team_reviewers: reviewer_teams
-                    team_reviewers: ['s737team']
+                    // team_reviewers: ['s737team']
                 });
                 // await octokit.request({
                 //   ...context.repo,
