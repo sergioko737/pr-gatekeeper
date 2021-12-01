@@ -99,8 +99,8 @@ async function run(): Promise<void> {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
-        reviewers: reviewer_persons,
-        team_reviewers: reviewer_teams
+        reviewers: reviewer_persons.toString(),
+        team_reviewers: reviewer_teams.toString()
       });
       // await octokit.request({
       //   ...context.repo,
