@@ -22,7 +22,7 @@ export async function assignReviewers(client: any, reviewer_persons: string[], r
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             pull_number: pr_number,
-            reviewers: reviewer_persons,
+            reviewers: reviewer_persons[0],
             // team_reviewers: [...reviewer_teams],
         });
         core.info(`Assigned individual reviews to ${reviewer_persons}.`);
@@ -99,7 +99,7 @@ async function run(): Promise<void> {
 
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
-      // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
+      assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
       await octokit.rest.pulls.requestReviewers({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
