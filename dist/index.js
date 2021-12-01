@@ -121,7 +121,7 @@ function run() {
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
                     // reviewers: reviewer_persons,
-                    reviewers: ['sergioko747', 'sergioko757'],
+                    // reviewers: ['sergioko747', 'sergioko757'],
                     // team_reviewers: reviewer_teams
                     team_reviewers: ['s737testOrg/s737team']
                 });
