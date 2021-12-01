@@ -51,6 +51,8 @@ async function run(): Promise<void> {
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
     const pr_number = payload.pull_request.number
+    const sha = payload.pull_request.head.sha
+    const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
 
     // Read values from config file if it exists
     const config_file = fs.readFileSync(core.getInput('config-file'), 'utf8')
@@ -71,7 +73,7 @@ async function run(): Promise<void> {
 
 
     // Request reviews if eventName == pull_request
-    // if (context.eventName == 'pull_request') {
+    if (context.eventName == 'pull_request') {
       console.log(`We are going to request someones approval!!!`)
       assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
       // await octokit.rest.pulls.requestReviewers({
@@ -81,10 +83,20 @@ async function run(): Promise<void> {
       //   reviewers: reviewer_persons[0],
       //   // team_reviewers: reviewer_teams[0]
       // });
-    // } else {
-    //   console.log(`We don't care about requesting approvals! We'll just check who already approved`)
-    // }
+      octokit.rest.repos.createCommitStatus({
+        ...context.repo,
+        sha,
+        state: 'success',
+        context: 'PR Gatekeeper Status2',
+        target_url: workflow_url,
+        description: "PR"
+      })
 
+    } else {
+      console.log(`We don't care about requesting approvals! We'll just check who already approved`)
+    }
+
+    
     //retrieve approvals
     const reviews = await octokit.rest.pulls.listReviews({
       ...context.repo,
@@ -105,14 +117,15 @@ async function run(): Promise<void> {
       payload.pull_request.user.login
     )
 
-    const sha = payload.pull_request.head.sha
+    
     console.log(`sha: ${sha}`)
     // The workflow url can be obtained by combining several environment varialbes, as described below:
     // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
-    const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
+    
     console.log(`workflow_url: ${workflow_url}`)
     core.info(`Setting a status on commit (${sha})`)
 
+    if (context.eventName == 'pull_request_review') {
     octokit.rest.repos.createCommitStatus({
       ...context.repo,
       sha,
@@ -128,6 +141,7 @@ async function run(): Promise<void> {
       core.setFailed(review_gatekeeper.getMessages().join(EOL))
       return
     }
+  }
   } catch (error) {
     core.setFailed(error.message)
     console.log("error: ", error);
