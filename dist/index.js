@@ -92,7 +92,7 @@ function run() {
             const reviewer_persons = [];
             const reviewer_teams = [];
             for (const persons of config_file_contents.approvals.groups) {
-                reviewer_persons.push(persons.from.person);
+                reviewer_persons.push(persons.from.person.join());
             }
             for (const teams of config_file_contents.approvals.groups) {
                 reviewer_teams.push(teams.from.team);
@@ -116,6 +116,7 @@ function run() {
             console.log(Array.isArray(reviewer_persons));
             console.log(reviewer_persons);
             console.log(reviewers_sample);
+            console.log(reviewer_teams);
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
