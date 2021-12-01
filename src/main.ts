@@ -109,7 +109,7 @@ async function run(): Promise<void> {
         repo: github.context.repo.repo,
         pull_number: pr_number,
         // reviewers: rev_per
-        reviewers: ['sergioko747, sergioko757'],
+        reviewers: ['sergioko747', 'sergioko757'],
         // team_reviewers: [...reviewer_teams].join(','),
       });
       // await octokit.request({
