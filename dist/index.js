@@ -105,7 +105,7 @@ function run() {
                 //   reviewers: reviewer_persons[0],
                 //   // team_reviewers: reviewer_teams[0]
                 // });
-                octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: 'success', context: 'PR Gatekeeper Status2', target_url: workflow_url, description: "PR" }));
+                octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: 'failure', context: 'PR Gatekeeper Status2', target_url: workflow_url, description: "PR" }));
             }
             else {
                 console.log(`We don't care about requesting approvals! We'll just check who already approved`);

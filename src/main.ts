@@ -86,7 +86,7 @@ async function run(): Promise<void> {
       octokit.rest.repos.createCommitStatus({
         ...context.repo,
         sha,
-        state: 'success',
+        state: 'failure',
         context: 'PR Gatekeeper Status2',
         target_url: workflow_url,
         description: "PR"
