@@ -95,18 +95,9 @@ function run() {
             for (const teams of config_file_contents.approvals.groups) {
                 reviewer_teams.push(teams.from.team);
             }
-            // console.log(config_file_contents.approvals.groups.from)
-            // const reviewer_persons_arr = [...reviewer_persons]
-            // const reviewer_teams_arr = [...reviewer_teams]
-            console.log(`Persons: ${reviewer_persons}`);
-            for (let item of reviewer_persons)
-                console.log(item);
-            for (let item of reviewer_teams)
-                console.log(item);
             // Get authorizations
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
-            const client = github.getOctokit(token);
             const pr_number = payload.pull_request.number;
             // Request reviews if eventName == pull_request
             //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
@@ -123,12 +114,11 @@ function run() {
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-                yield client.rest.pulls.requestReviewers({
+                yield octokit.rest.pulls.requestReviewers({
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
                     reviewers: reviewer_persons,
-                    // reviewers: ['sergioko747', 'sergioko757'],
                     team_reviewers: reviewer_teams
                 });
                 // await octokit.request({
