@@ -65,8 +65,8 @@ async function run(): Promise<void> {
     for (const persons of config_file_contents.approvals.groups) {
       reviewer_persons.push(persons.from.person)
     }
-    for (const persons of config_file_contents.approvals.groups.from) {
-      reviewer_persons2.push(persons.person)
+    for (const persons of config_file_contents.approvals.groups.from.person) {
+      reviewer_persons2.push(persons)
     }
     for (const teams of config_file_contents.approvals.groups) {
       reviewer_teams.push(teams.from.team)
