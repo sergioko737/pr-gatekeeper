@@ -88,10 +88,11 @@ async function run(): Promise<void> {
       // number (Integer) — Number ID of the pull request
       // reviewers (Hash) (defaults to: {}) — :reviewers [Array] An array of user logins
       // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
-
+      const reviewers_sample = ['sergioko747','sergioko757']
       console.log("Reviewer_persons")
       console.log(Array.isArray(reviewer_persons))
       console.log(reviewer_persons)
+      console.log(reviewers_sample)
 
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
