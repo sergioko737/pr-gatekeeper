@@ -9,7 +9,7 @@ import { ReviewRequester } from './review_requester'
 
 
 
-export async function assignReviewers(client: any, reviewer_persons: string[], reviewer_teams: string[], pr_number: any) {
+export async function assignReviewers(client: any, reviewer_persons: string[], reviewer_teams: string[], pr_number: number) {
   try {
     console.log(`entering assignReviewers`)
     if (reviewer_persons.length || reviewer_teams.length) {
@@ -59,10 +59,11 @@ async function run(): Promise<void> {
     const config_file_contents = YAML.parse(config_file)
 
     const reviewer_persons: string[] = []
-    const reviewer_teams: string[] = []
     for (const persons of config_file_contents.approvals.groups) {
       reviewer_persons.push(persons.from.person)
     }
+
+    const reviewer_teams: string[] = []
     for (const teams of config_file_contents.approvals.groups) {
       reviewer_teams.push(teams.from.team)
     }
@@ -78,44 +79,44 @@ async function run(): Promise<void> {
         state: 'failure',
         context: 'PR Gatekeeper Status2',
         target_url: workflow_url,
-        description: "PR"
+        description: "PR contains changes subject to special review"
       })
 
     } else {
       console.log(`We don't care about requesting approvals! We'll just check who already approved`)
 
-    //retrieve approvals
-    const reviews = await octokit.rest.pulls.listReviews({
-      ...context.repo,
-      pull_number: payload.pull_request.number
-    })
-    const approved_users: Set<string> = new Set()
-    for (const review of reviews.data) {
-      if (review.state === `APPROVED`) {
-        approved_users.add(review.user!.login)
-        console.log(`Approval from: ${review.user!.login}`)
+      //retrieve approvals
+      const reviews = await octokit.rest.pulls.listReviews({
+        ...context.repo,
+        pull_number: payload.pull_request.number
+      })
+      const approved_users: Set<string> = new Set()
+      for (const review of reviews.data) {
+        if (review.state === `APPROVED`) {
+          approved_users.add(review.user!.login)
+          console.log(`Approval from: ${review.user!.login}`)
+        }
       }
-    }
 
-    // check approvals
-    const review_gatekeeper = new ReviewGatekeeper(
-      config_file_contents as Settings,
-      Array.from(approved_users),
-      payload.pull_request.user.login
-    )
+      // check approvals
+      const review_gatekeeper = new ReviewGatekeeper(
+        config_file_contents as Settings,
+        Array.from(approved_users),
+        payload.pull_request.user.login
+      )
 
-    console.log(`sha: ${sha}`)
-    // The workflow url can be obtained by combining several environment varialbes, as described below:
-    // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
-    console.log(`workflow_url: ${workflow_url}`)
-    core.info(`Setting a status on commit (${sha})`)
+      console.log(`sha: ${sha}`)
+      // The workflow url can be obtained by combining several environment varialbes, as described below:
+      // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
+      console.log(`workflow_url: ${workflow_url}`)
+      core.info(`Setting a status on commit (${sha})`)
 
 
       octokit.rest.repos.createCommitStatus({
         ...context.repo,
         sha,
         state: review_gatekeeper.satisfy() ? 'success' : 'failure',
-        context: 'PR Gatekeeper Status2',
+        context: 'PR Gatekeeper Status',
         target_url: workflow_url,
         description: review_gatekeeper.satisfy()
           ? undefined
