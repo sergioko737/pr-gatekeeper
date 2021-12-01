@@ -90,9 +90,13 @@ function run() {
             console.log(config_file_contents);
             console.log(config_file_contents.approvals.groups);
             const reviewer_persons = [];
+            const reviewer_persons2 = [];
             const reviewer_teams = [];
             for (const persons of config_file_contents.approvals.groups) {
                 reviewer_persons.push(persons.from.person);
+            }
+            for (const persons of config_file_contents.approvals.groups.from) {
+                reviewer_persons2.push(persons.person);
             }
             for (const teams of config_file_contents.approvals.groups) {
                 reviewer_teams.push(teams.from.team);
