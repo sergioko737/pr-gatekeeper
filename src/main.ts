@@ -57,16 +57,11 @@ async function run(): Promise<void> {
 
     // Parse contents of config file into variable
     const config_file_contents = YAML.parse(config_file)
-    console.log(config_file_contents)
-    console.log(config_file_contents.approvals.groups)
+
     const reviewer_persons: string[] = []
-    const reviewer_persons2: string[] = []
     const reviewer_teams: string[] = []
     for (const persons of config_file_contents.approvals.groups) {
       reviewer_persons.push(persons.from.person)
-    }
-    for (const persons of config_file_contents.approvals.groups.from.person) {
-      reviewer_persons2.push(persons)
     }
     for (const teams of config_file_contents.approvals.groups) {
       reviewer_teams.push(teams.from.team)
@@ -107,7 +102,7 @@ async function run(): Promise<void> {
       await octokit.rest.pulls.requestReviewers({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        pull_number: pr_number,
+        pull_number: payload.pull_request.number,
         reviewers: reviewer_persons[0],
         // reviewers: ['sergioko747', 'sergioko757'],
         // reviewers: [],
