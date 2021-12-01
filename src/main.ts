@@ -6,7 +6,6 @@ import * as YAML from 'yaml'
 import { EOL } from 'os'
 import { Settings, ReviewGatekeeper } from './review_gatekeeper'
 import { ReviewRequester } from './review_requester'
-// import { Collection } from 'yaml/types'
 
 
 
@@ -34,7 +33,6 @@ export async function assignReviewers(client: any, reviewer_persons: string[], r
 async function run(): Promise<void> {
   try {
     const context = github.context
-
     if (
       context.eventName !== 'pull_request' &&
       context.eventName !== 'pull_request_review'
@@ -69,20 +67,11 @@ async function run(): Promise<void> {
       reviewer_teams.push(teams.from.team)
     }
 
-
-
-
     // Request reviews if eventName == pull_request
     if (context.eventName == 'pull_request') {
       console.log(`We are going to request someones approval!!!`)
       assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-      // await octokit.rest.pulls.requestReviewers({
-      //   owner: github.context.repo.owner,
-      //   repo: github.context.repo.repo,
-      //   pull_number: payload.pull_request.number,
-      //   reviewers: reviewer_persons[0],
-      //   // team_reviewers: reviewer_teams[0]
-      // });
+
       octokit.rest.repos.createCommitStatus({
         ...context.repo,
         sha,
@@ -94,9 +83,7 @@ async function run(): Promise<void> {
 
     } else {
       console.log(`We don't care about requesting approvals! We'll just check who already approved`)
-    }
 
-    
     //retrieve approvals
     const reviews = await octokit.rest.pulls.listReviews({
       ...context.repo,
@@ -117,31 +104,29 @@ async function run(): Promise<void> {
       payload.pull_request.user.login
     )
 
-    
     console.log(`sha: ${sha}`)
     // The workflow url can be obtained by combining several environment varialbes, as described below:
     // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
-    
     console.log(`workflow_url: ${workflow_url}`)
     core.info(`Setting a status on commit (${sha})`)
 
-    if (context.eventName == 'pull_request_review') {
-    octokit.rest.repos.createCommitStatus({
-      ...context.repo,
-      sha,
-      state: review_gatekeeper.satisfy() ? 'success' : 'failure',
-      context: 'PR Gatekeeper Status2',
-      target_url: workflow_url,
-      description: review_gatekeeper.satisfy()
-        ? undefined
-        : review_gatekeeper.getMessages().join(' ').substr(0, 140)
-    })
 
-    if (!review_gatekeeper.satisfy()) {
-      core.setFailed(review_gatekeeper.getMessages().join(EOL))
-      return
+      octokit.rest.repos.createCommitStatus({
+        ...context.repo,
+        sha,
+        state: review_gatekeeper.satisfy() ? 'success' : 'failure',
+        context: 'PR Gatekeeper Status2',
+        target_url: workflow_url,
+        description: review_gatekeeper.satisfy()
+          ? undefined
+          : review_gatekeeper.getMessages().join(' ').substr(0, 140)
+      })
+
+      if (!review_gatekeeper.satisfy()) {
+        core.setFailed(review_gatekeeper.getMessages().join(EOL))
+        return
+      }
     }
-  }
   } catch (error) {
     core.setFailed(error.message)
     console.log("error: ", error);
