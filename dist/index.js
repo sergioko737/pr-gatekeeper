@@ -87,13 +87,13 @@ function run() {
             const config_file_contents = YAML.parse(config_file);
             console.log(config_file_contents);
             console.log(config_file_contents.approvals.groups);
-            const reviewer_persons = new Set();
-            const reviewer_teams = new Set();
+            let reviewer_persons = [];
+            let reviewer_teams = [];
             for (const persons of config_file_contents.approvals.groups) {
-                reviewer_persons.add(persons.from.person);
+                reviewer_persons.push(persons.from.person);
             }
             for (const teams of config_file_contents.approvals.groups) {
-                reviewer_teams.add(teams.from.team);
+                reviewer_teams.push(teams.from.team);
             }
             // console.log(config_file_contents.approvals.groups.from)
             // const reviewer_persons_arr = [...reviewer_persons]
@@ -118,14 +118,8 @@ function run() {
             // number (Integer) — Number ID of the pull request
             // reviewers (Hash) (defaults to: {}) — :reviewers [Array] An array of user logins
             // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
-            const rev_per = Array.from(reviewer_persons);
-            const rev_team = Array.from(reviewer_teams);
             console.log("Reviewer_persons");
             console.log(Array.isArray(reviewer_persons));
-            console.log("rev_per");
-            console.log(Array.isArray(rev_per));
-            console.log(Array.isArray(rev_team));
-            console.log(typeof rev_per[0]);
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 // assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
@@ -133,9 +127,9 @@ function run() {
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
-                    reviewers: [...rev_per].join(','),
+                    reviewers: [...reviewer_persons].join(','),
                     // reviewers: ['sergioko747', 'sergioko757'],
-                    team_reviewers: [...rev_team].join(','),
+                    team_reviewers: [...reviewer_teams].join(','),
                 });
                 // await octokit.request({
                 //   ...context.repo,
