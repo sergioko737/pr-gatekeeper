@@ -106,9 +106,9 @@ async function run(): Promise<void> {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
-        reviewers: [...reviewer_persons].join(','),
+        reviewers: reviewer_persons,
         // reviewers: ['sergioko747', 'sergioko757'],
-        team_reviewers: [...reviewer_teams].join(','),
+        team_reviewers: reviewer_teams
       });
       // await octokit.request({
       //   ...context.repo,
