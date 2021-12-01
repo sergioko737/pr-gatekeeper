@@ -100,7 +100,7 @@ async function run(): Promise<void> {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
-        reviewers: reviewer_persons,
+        reviewers: reviewer_persons.join(),
         // reviewers: ['sergioko747', 'sergioko757'],
         // reviewers: [],
         // team_reviewers: reviewer_teams
