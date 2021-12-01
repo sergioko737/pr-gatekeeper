@@ -96,10 +96,12 @@ async function run(): Promise<void> {
       // reviewers (Hash) (defaults to: {}) — :reviewers [Array] An array of user logins
       // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
       const rev_per = Array.from(reviewer_persons)
+      const rev_team = Array.from(reviewer_teams)
       console.log("Reviewer_persons")
       console.log(Array.isArray(reviewer_persons))
       console.log("rev_per")
       console.log(Array.isArray(rev_per))
+      console.log(Array.isArray(rev_team))
       console.log(typeof rev_per[0])
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
@@ -108,9 +110,9 @@ async function run(): Promise<void> {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
-        reviewers: [...reviewer_persons].join(','),
+        reviewers: [...rev_per].join(','),
         // reviewers: ['sergioko747', 'sergioko757'],
-        team_reviewers: [...reviewer_teams].join(','),
+        team_reviewers: [...rev_team].join(','),
       });
       // await octokit.request({
       //   ...context.repo,
