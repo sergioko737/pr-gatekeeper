@@ -62,7 +62,7 @@ async function run(): Promise<void> {
     const reviewer_persons: string[] = []
     const reviewer_teams: string[] = []
     for (const persons of config_file_contents.approvals.groups) {
-      reviewer_persons.push(persons.from.person.join())
+      reviewer_persons.push(persons.from.person)
     }
     for (const teams of config_file_contents.approvals.groups) {
       reviewer_teams.push(teams.from.team)
@@ -92,6 +92,8 @@ async function run(): Promise<void> {
       console.log("Reviewer_persons")
       console.log(Array.isArray(reviewer_persons))
       console.log(reviewer_persons)
+      console.log(reviewer_persons[0])
+      console.log("---------")
       console.log(reviewers_sample)
       console.log(reviewer_teams)
 
