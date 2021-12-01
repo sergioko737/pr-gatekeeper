@@ -77,7 +77,7 @@ async function run(): Promise<void> {
         ...context.repo,
         sha,
         state: 'failure',
-        context: 'PR Gatekeeper Status2',
+        context: 'PR Gatekeeper Status',
         target_url: workflow_url,
         description: "PR contains changes subject to special review"
       })

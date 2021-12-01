@@ -97,7 +97,7 @@ function run() {
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number);
-                octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: 'failure', context: 'PR Gatekeeper Status2', target_url: workflow_url, description: "PR contains changes subject to special review" }));
+                octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: 'failure', context: 'PR Gatekeeper Status', target_url: workflow_url, description: "PR contains changes subject to special review" }));
             }
             else {
                 console.log(`We don't care about requesting approvals! We'll just check who already approved`);
