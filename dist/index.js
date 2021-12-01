@@ -47,10 +47,6 @@ function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             console.log(`entering assignReviewers`);
-            console.log(`Persons: ${reviewer_persons.length}`);
-            console.log(`Teams: ${reviewer_teams.length}`);
-            console.log(`Persons set to string: ${[...reviewer_persons].join(',')}`);
-            console.log(`Persons: ${reviewer_persons}`);
             if (reviewer_persons.length || reviewer_teams.length) {
                 yield client.rest.pulls.requestReviewers({
                     owner: github.context.repo.owner,
@@ -59,8 +55,8 @@ function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
                     reviewers: reviewer_persons[0],
                     // team_reviewers: reviewer_teams[0],
                 });
-                core.info(`Assigned individual reviews to ${reviewer_persons}.`);
-                core.info(`Assigned team reviews to ${reviewer_teams}.`);
+                core.info(`Requested review from: ${reviewer_persons}.`);
+                // core.info(`Assigned team reviews to ${reviewer_teams}.`);
             }
             console.log(`exiting assignReviewers`);
         }
@@ -81,6 +77,9 @@ function run() {
                 return;
             }
             const payload = context.payload;
+            const token = core.getInput('token');
+            const octokit = github.getOctokit(token);
+            const pr_number = payload.pull_request.number;
             // Read values from config file if it exists
             const config_file = fs.readFileSync(core.getInput('config-file'), 'utf8');
             // Parse contents of config file into variable
@@ -93,28 +92,20 @@ function run() {
             for (const teams of config_file_contents.approvals.groups) {
                 reviewer_teams.push(teams.from.team);
             }
-            // Get authorizations
-            const token = core.getInput('token');
-            const octokit = github.getOctokit(token);
-            const pr_number = payload.pull_request.number;
             // Request reviews if eventName == pull_request
-            if (context.eventName == 'pull_request') {
-                console.log(`We are going to request someones approval!!!`);
-                assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number);
-                // await octokit.rest.pulls.requestReviewers({
-                //   owner: github.context.repo.owner,
-                //   repo: github.context.repo.repo,
-                //   pull_number: payload.pull_request.number,
-                //   reviewers: reviewer_persons[0],
-                //   // team_reviewers: reviewer_teams[0]
-                // });
-                // await octokit.request({
-                //   ...context.repo,
-                // })
-            }
-            else {
-                console.log(`We don't care about requesting approvals! We'll just check who already approved`);
-            }
+            // if (context.eventName == 'pull_request') {
+            console.log(`We are going to request someones approval!!!`);
+            assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number);
+            // await octokit.rest.pulls.requestReviewers({
+            //   owner: github.context.repo.owner,
+            //   repo: github.context.repo.repo,
+            //   pull_number: payload.pull_request.number,
+            //   reviewers: reviewer_persons[0],
+            //   // team_reviewers: reviewer_teams[0]
+            // });
+            // } else {
+            //   console.log(`We don't care about requesting approvals! We'll just check who already approved`)
+            // }
             //retrieve approvals
             const reviews = yield octokit.rest.pulls.listReviews(Object.assign(Object.assign({}, context.repo), { pull_number: payload.pull_request.number }));
             const approved_users = new Set();

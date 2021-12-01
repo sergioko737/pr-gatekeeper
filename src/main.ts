@@ -3,9 +3,9 @@ import * as github from '@actions/github'
 import * as Webhooks from '@octokit/webhooks-types'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
-import {EOL} from 'os'
-import {Settings, ReviewGatekeeper} from './review_gatekeeper'
-import {ReviewRequester} from './review_requester'
+import { EOL } from 'os'
+import { Settings, ReviewGatekeeper } from './review_gatekeeper'
+import { ReviewRequester } from './review_requester'
 // import { Collection } from 'yaml/types'
 
 
@@ -13,31 +13,28 @@ import {ReviewRequester} from './review_requester'
 export async function assignReviewers(client: any, reviewer_persons: string[], reviewer_teams: string[], pr_number: any) {
   try {
     console.log(`entering assignReviewers`)
-    console.log(`Persons: ${reviewer_persons.length}`)
-    console.log(`Teams: ${reviewer_teams.length}`)
-    console.log(`Persons set to string: ${[...reviewer_persons].join(',')}`)
-    console.log(`Persons: ${reviewer_persons}`)
     if (reviewer_persons.length || reviewer_teams.length) {
-        await client.rest.pulls.requestReviewers({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            pull_number: pr_number,
-            reviewers: reviewer_persons[0],
-            // team_reviewers: reviewer_teams[0],
-        });
-        core.info(`Assigned individual reviews to ${reviewer_persons}.`);
-        core.info(`Assigned team reviews to ${reviewer_teams}.`);
+      await client.rest.pulls.requestReviewers({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        pull_number: pr_number,
+        reviewers: reviewer_persons[0],
+        // team_reviewers: reviewer_teams[0],
+      });
+      core.info(`Requested review from: ${reviewer_persons}.`);
+      // core.info(`Assigned team reviews to ${reviewer_teams}.`);
     }
     console.log(`exiting assignReviewers`)
   } catch (error) {
     core.setFailed(error.message)
-    console.log("error: ",error);
+    console.log("error: ", error);
   }
 }
 
 async function run(): Promise<void> {
   try {
     const context = github.context
+
     if (
       context.eventName !== 'pull_request' &&
       context.eventName !== 'pull_request_review'
@@ -50,6 +47,10 @@ async function run(): Promise<void> {
     const payload = context.payload as
       | Webhooks.PullRequestEvent
       | Webhooks.PullRequestReviewEvent
+
+    const token: string = core.getInput('token')
+    const octokit = github.getOctokit(token)
+    const pr_number = payload.pull_request.number
 
     // Read values from config file if it exists
     const config_file = fs.readFileSync(core.getInput('config-file'), 'utf8')
@@ -66,15 +67,11 @@ async function run(): Promise<void> {
       reviewer_teams.push(teams.from.team)
     }
 
-    // Get authorizations
-    const token: string = core.getInput('token')
-    const octokit = github.getOctokit(token)
-    const pr_number = payload.pull_request.number
 
 
 
     // Request reviews if eventName == pull_request
-    if ( context.eventName == 'pull_request' ) {
+    // if (context.eventName == 'pull_request') {
       console.log(`We are going to request someones approval!!!`)
       assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
       // await octokit.rest.pulls.requestReviewers({
@@ -84,13 +81,9 @@ async function run(): Promise<void> {
       //   reviewers: reviewer_persons[0],
       //   // team_reviewers: reviewer_teams[0]
       // });
-      // await octokit.request({
-      //   ...context.repo,
-
-      // })
-    } else {
-      console.log(`We don't care about requesting approvals! We'll just check who already approved`)
-    }
+    // } else {
+    //   console.log(`We don't care about requesting approvals! We'll just check who already approved`)
+    // }
 
     //retrieve approvals
     const reviews = await octokit.rest.pulls.listReviews({
@@ -137,7 +130,7 @@ async function run(): Promise<void> {
     }
   } catch (error) {
     core.setFailed(error.message)
-    console.log("error: ",error);
+    console.log("error: ", error);
   }
 }
 
