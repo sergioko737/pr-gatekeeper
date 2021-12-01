@@ -124,7 +124,7 @@ function run() {
                     // reviewers: ['sergioko747', 'sergioko757'],
                     reviewers: [],
                     // team_reviewers: reviewer_teams
-                    team_reviewers: ['s737testOrg/s737team']
+                    team_reviewers: ['s737team']
                 });
                 // await octokit.request({
                 //   ...context.repo,
