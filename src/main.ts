@@ -5,8 +5,8 @@ import * as fs from 'fs'
 import * as YAML from 'yaml'
 import {EOL} from 'os'
 import {Settings, ReviewGatekeeper} from './review_gatekeeper'
-import {SettingsRequester, ReviewRequester} from './review_requester'
-import { Collection } from 'yaml/types'
+// import {SettingsRequester, ReviewRequester} from './review_requester'
+// import { Collection } from 'yaml/types'
 
 
 
@@ -99,8 +99,9 @@ async function run(): Promise<void> {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         pull_number: pr_number,
-        reviewers: reviewer_persons,
-        team_reviewers: reviewer_teams
+        // reviewers: reviewer_persons,
+        // team_reviewers: reviewer_teams
+        team_reviewers: ['s737testOrg/s737team']
       });
       // await octokit.request({
       //   ...context.repo,

@@ -42,6 +42,8 @@ const fs = __importStar(__nccwpck_require__(5747));
 const YAML = __importStar(__nccwpck_require__(3552));
 const os_1 = __nccwpck_require__(2087);
 const review_gatekeeper_1 = __nccwpck_require__(302);
+// import {SettingsRequester, ReviewRequester} from './review_requester'
+// import { Collection } from 'yaml/types'
 function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -118,8 +120,9 @@ function run() {
                     owner: github.context.repo.owner,
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
-                    reviewers: reviewer_persons,
-                    team_reviewers: reviewer_teams
+                    // reviewers: reviewer_persons,
+                    // team_reviewers: reviewer_teams
+                    team_reviewers: ['s737testOrg/s737team']
                 });
                 // await octokit.request({
                 //   ...context.repo,
