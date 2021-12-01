@@ -10,19 +10,20 @@ import {Settings, ReviewGatekeeper} from './review_gatekeeper'
 
 
 
-export async function assignReviewers(client: any, reviewer_persons: Set<any>, reviewer_teams: Set<any>, pr_number: any) {
+export async function assignReviewers(client: any, reviewer_persons: string[], reviewer_teams: string[], pr_number: any) {
   try {
     console.log(`entering assignReviewers`)
-    console.log(`Persons: ${reviewer_persons.size}`)
-    console.log(`Teams: ${reviewer_teams.size}`)
+    console.log(`Persons: ${reviewer_persons.length}`)
+    console.log(`Teams: ${reviewer_teams.length}`)
     console.log(`Persons set to string: ${[...reviewer_persons].join(',')}`)
-    if (reviewer_persons.size || reviewer_teams.size) {
-        await client.pulls.createReviewRequest({
+    console.log(`Persons: ${reviewer_persons}`)
+    if (reviewer_persons.length || reviewer_teams.length) {
+        await client.rest.pulls.requestReviewers({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             pull_number: pr_number,
-            reviewers: [...reviewer_persons].join(','),
-            team_reviewers: [...reviewer_teams].join(','),
+            reviewers: reviewer_persons,
+            // team_reviewers: [...reviewer_teams],
         });
         core.info(`Assigned individual reviews to ${reviewer_persons}.`);
         core.info(`Assigned team reviews to ${reviewer_teams}.`);
@@ -104,10 +105,7 @@ async function run(): Promise<void> {
         repo: github.context.repo.repo,
         pull_number: payload.pull_request.number,
         reviewers: reviewer_persons[0],
-        // reviewers: ['sergioko747', 'sergioko757'],
-        // reviewers: [],
-        // team_reviewers: reviewer_teams
-        // team_reviewers: ['s737team']
+        // team_reviewers: reviewer_teams[0]
       });
       // await octokit.request({
       //   ...context.repo,
