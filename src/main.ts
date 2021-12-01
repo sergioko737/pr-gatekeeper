@@ -5,7 +5,7 @@ import * as fs from 'fs'
 import * as YAML from 'yaml'
 import {EOL} from 'os'
 import {Settings, ReviewGatekeeper} from './review_gatekeeper'
-// import {SettingsRequester, ReviewRequester} from './review_requester'
+import {ReviewRequester} from './review_requester'
 // import { Collection } from 'yaml/types'
 
 
@@ -23,7 +23,7 @@ export async function assignReviewers(client: any, reviewer_persons: string[], r
             repo: github.context.repo.repo,
             pull_number: pr_number,
             reviewers: reviewer_persons[0],
-            // team_reviewers: [...reviewer_teams],
+            // team_reviewers: reviewer_teams[0],
         });
         core.info(`Assigned individual reviews to ${reviewer_persons}.`);
         core.info(`Assigned team reviews to ${reviewer_teams}.`);
@@ -37,8 +37,6 @@ export async function assignReviewers(client: any, reviewer_persons: string[], r
 
 async function run(): Promise<void> {
   try {
-    const core = require('@actions/core')
-    const github = require('@actions/github')
     const context = github.context
     if (
       context.eventName !== 'pull_request' &&
@@ -76,37 +74,16 @@ async function run(): Promise<void> {
 
 
     // Request reviews if eventName == pull_request
-      //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
-      // Create a review request
-
-      // Examples:
-
-      // @client.request_pull_request_review('octokit/octokit.rb', 2, reviewers: ['soudy'])
-      // Parameters:
-
-      // repo (Integer, String, Hash, Repository) — A GitHub repository
-      // number (Integer) — Number ID of the pull request
-      // reviewers (Hash) (defaults to: {}) — :reviewers [Array] An array of user logins
-      // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
-      const reviewers_sample = ['sergioko747','sergioko757']
-      console.log("Reviewer_persons")
-      console.log(Array.isArray(reviewer_persons))
-      console.log(reviewer_persons)
-      console.log(reviewer_persons[0])
-      console.log("---------")
-      console.log(reviewers_sample)
-      console.log(reviewer_teams)
-
     if ( context.eventName == 'pull_request' ) {
       console.log(`We are going to request someones approval!!!`)
       assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number)
-      await octokit.rest.pulls.requestReviewers({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        pull_number: payload.pull_request.number,
-        reviewers: reviewer_persons[0],
-        // team_reviewers: reviewer_teams[0]
-      });
+      // await octokit.rest.pulls.requestReviewers({
+      //   owner: github.context.repo.owner,
+      //   repo: github.context.repo.repo,
+      //   pull_number: payload.pull_request.number,
+      //   reviewers: reviewer_persons[0],
+      //   // team_reviewers: reviewer_teams[0]
+      // });
       // await octokit.request({
       //   ...context.repo,
 

@@ -42,7 +42,6 @@ const fs = __importStar(__nccwpck_require__(5747));
 const YAML = __importStar(__nccwpck_require__(3552));
 const os_1 = __nccwpck_require__(2087);
 const review_gatekeeper_1 = __nccwpck_require__(302);
-// import {SettingsRequester, ReviewRequester} from './review_requester'
 // import { Collection } from 'yaml/types'
 function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -58,7 +57,7 @@ function assignReviewers(client, reviewer_persons, reviewer_teams, pr_number) {
                     repo: github.context.repo.repo,
                     pull_number: pr_number,
                     reviewers: reviewer_persons[0],
-                    // team_reviewers: [...reviewer_teams],
+                    // team_reviewers: reviewer_teams[0],
                 });
                 core.info(`Assigned individual reviews to ${reviewer_persons}.`);
                 core.info(`Assigned team reviews to ${reviewer_teams}.`);
@@ -75,8 +74,6 @@ exports.assignReviewers = assignReviewers;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const core = __nccwpck_require__(2186);
-            const github = __nccwpck_require__(5438);
             const context = github.context;
             if (context.eventName !== 'pull_request' &&
                 context.eventName !== 'pull_request_review') {
@@ -101,33 +98,16 @@ function run() {
             const octokit = github.getOctokit(token);
             const pr_number = payload.pull_request.number;
             // Request reviews if eventName == pull_request
-            //   #request_pull_request_review(repo, number, reviewers = {}, options = {}) ⇒ Sawyer::Resource
-            // Create a review request
-            // Examples:
-            // @client.request_pull_request_review('octokit/octokit.rb', 2, reviewers: ['soudy'])
-            // Parameters:
-            // repo (Integer, String, Hash, Repository) — A GitHub repository
-            // number (Integer) — Number ID of the pull request
-            // reviewers (Hash) (defaults to: {}) — :reviewers [Array] An array of user logins
-            // options (Hash) (defaults to: {}) — :team_reviewers [Array] An array of team slugs
-            const reviewers_sample = ['sergioko747', 'sergioko757'];
-            console.log("Reviewer_persons");
-            console.log(Array.isArray(reviewer_persons));
-            console.log(reviewer_persons);
-            console.log(reviewer_persons[0]);
-            console.log("---------");
-            console.log(reviewers_sample);
-            console.log(reviewer_teams);
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
                 assignReviewers(octokit, reviewer_persons, reviewer_teams, pr_number);
-                yield octokit.rest.pulls.requestReviewers({
-                    owner: github.context.repo.owner,
-                    repo: github.context.repo.repo,
-                    pull_number: payload.pull_request.number,
-                    reviewers: reviewer_persons[0],
-                    // team_reviewers: reviewer_teams[0]
-                });
+                // await octokit.rest.pulls.requestReviewers({
+                //   owner: github.context.repo.owner,
+                //   repo: github.context.repo.repo,
+                //   pull_number: payload.pull_request.number,
+                //   reviewers: reviewer_persons[0],
+                //   // team_reviewers: reviewer_teams[0]
+                // });
                 // await octokit.request({
                 //   ...context.repo,
                 // })
