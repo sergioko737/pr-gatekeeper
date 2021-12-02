@@ -139,7 +139,7 @@ async function run(): Promise<void> {
           : review_gatekeeper.getMessages().join(' ').substr(0, 140)
       })
 
-      if (!review_gatekeeper.satisfy()) {
+      if (!review_gatekeeper.satisfy() && context.eventName == 'pull_request_review') {
         core.setFailed(review_gatekeeper.getMessages().join(EOL))
         return
       }

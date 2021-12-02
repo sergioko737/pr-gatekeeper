@@ -132,7 +132,7 @@ function run() {
             octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: review_gatekeeper.satisfy() ? 'success' : 'failure', context: 'PR Gatekeeper Status', target_url: workflow_url, description: review_gatekeeper.satisfy()
                     ? undefined
                     : review_gatekeeper.getMessages().join(' ').substr(0, 140) }));
-            if (!review_gatekeeper.satisfy()) {
+            if (!review_gatekeeper.satisfy() && context.eventName == 'pull_request_review') {
                 core.setFailed(review_gatekeeper.getMessages().join(os_1.EOL));
                 return;
             }
