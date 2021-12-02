@@ -68,21 +68,21 @@ async function run(): Promise<void> {
       reviewer_teams.push(teams.from.team)
     }
 
-    const reviewsParam = {
-      ...context.repo,
-      pull_number: pr_number,
-    };
-    const reviewsResponse = await octokit.rest.pulls.listReviews(reviewsParam);
+    // const reviewsParam = {
+    //   ...context.repo,
+    //   pull_number: pr_number,
+    // };
+    // const reviewsResponse = await octokit.rest.pulls.listReviews(reviewsParam);
 
-    const reviews = new Map();
-    reviewsResponse.data.forEach(review => {
-      reviews.set(review.user?.login, review.state);
-    });
+    // const reviews = new Map();
+    // reviewsResponse.data.forEach(review => {
+    //   reviews.set(review.user?.login, review.state);
+    // });
 
-    core.info(`Latest Reviews`);
-    reviews.forEach((value, key) => {
-      core.info(`${key} = ${value}`);
-    });
+    // core.info(`Latest Reviews`);
+    // reviews.forEach((value, key) => {
+    //   core.info(`${key} = ${value}`);
+    // });
 
     // Request reviews if eventName == pull_request
     if (context.eventName == 'pull_request') {
@@ -98,7 +98,7 @@ async function run(): Promise<void> {
         description: "PR contains changes subject to special review"
       })
 
-    } else {
+    } //else {
       console.log(`We don't care about requesting approvals! We'll just check who already approved`)
 
       //retrieve approvals
@@ -143,7 +143,7 @@ async function run(): Promise<void> {
         core.setFailed(review_gatekeeper.getMessages().join(EOL))
         return
       }
-    }
+    // }
   } catch (error) {
     core.setFailed(error.message)
     console.log("error: ", error);
