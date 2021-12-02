@@ -68,6 +68,22 @@ async function run(): Promise<void> {
       reviewer_teams.push(teams.from.team)
     }
 
+    const reviewsParam = {
+      ...context.repo,
+      pull_number: pr_number,
+    };
+    const reviewsResponse = await octokit.rest.pulls.listReviews(reviewsParam);
+
+    const reviews = new Map();
+    reviewsResponse.data.forEach(review => {
+      reviews.set(review.user?.login, review.state);
+    });
+
+    core.info(`Latest Reviews`);
+    reviews.forEach((value, key) => {
+      core.info(`${key} = ${value}`);
+    });
+
     // Request reviews if eventName == pull_request
     if (context.eventName == 'pull_request') {
       console.log(`We are going to request someones approval!!!`)

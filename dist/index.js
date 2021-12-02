@@ -93,6 +93,17 @@ function run() {
             for (const teams of config_file_contents.approvals.groups) {
                 reviewer_teams.push(teams.from.team);
             }
+            const reviewsParam = Object.assign(Object.assign({}, context.repo), { pull_number: pr_number });
+            const reviewsResponse = yield octokit.rest.pulls.listReviews(reviewsParam);
+            const reviews = new Map();
+            reviewsResponse.data.forEach(review => {
+                var _a;
+                reviews.set((_a = review.user) === null || _a === void 0 ? void 0 : _a.login, review.state);
+            });
+            core.info(`Latest Reviews`);
+            reviews.forEach((value, key) => {
+                core.info(`${key} = ${value}`);
+            });
             // Request reviews if eventName == pull_request
             if (context.eventName == 'pull_request') {
                 console.log(`We are going to request someones approval!!!`);
